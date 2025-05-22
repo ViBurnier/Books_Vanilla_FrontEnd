@@ -5,6 +5,8 @@ void main() {
 }
 
 class BooksVanilla extends StatelessWidget {
+  const BooksVanilla({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -19,31 +21,31 @@ class BooksVanilla extends StatelessWidget {
 }
 
 class HomePage extends StatelessWidget {
-  // Sample data for books; in a real app, you might fetch this from an API or database.
+   HomePage({super.key});
   final List<Map<String, String>> books = [
     {
       'title': 'The Great Gatsby',
       'author': 'F. Scott Fitzgerald',
       'image':
-      'https://placehold.co/600x400'
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQPhjUyQ760_j4k4sEKfv_7ALMg84oQUpR3eg&s'
     },
     {
       'title': '1984',
       'author': 'George Orwell',
       'image':
-      'https://placehold.co/600x400'
+      'https://miro.medium.com/v2/resize:fit:800/1*g8s4n-puPV3y-F2b7ilJ_A.jpeg'
     },
     {
       'title': 'To Kill a Mockingbird',
       'author': 'Harper Lee',
       'image':
-      'https://upload.wikimedia.org/wikipedia/en/7/79/To_Kill_a_Mockingbird.JPG'
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/To_Kill_a_Mockingbird_%28first_edition_cover%29.jpg/1200px-To_Kill_a_Mockingbird_%28first_edition_cover%29.jpg'
     },
     {
       'title': 'Moby-Dick',
       'author': 'Herman Melville',
       'image':
-      'https://upload.wikimedia.org/wikipedia/commons/4/41/Moby-Dick_FE_title_page.jpg'
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTm5hiiHoNxojxLBxy2m1qAFf-zGZsYUzO0KQ&s'
     },
   ];
 
@@ -147,11 +149,11 @@ class BookCard extends StatelessWidget {
   final String imageUrl;
 
   const BookCard({
-    Key? key,
+    super.key,
     required this.title,
     required this.author,
     required this.imageUrl,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
