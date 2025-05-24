@@ -1,4 +1,67 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+
+
+
+/// Fetches a JSON list of books from the given [apiUrl].
+/// The function expects the JSON to have a "data" key containing a list.
+Future<List<dynamic>> fetchBookList(String apiUrl) async {
+  try {
+    final response = await http.get(Uri.parse(apiUrl));
+
+    if (response.statusCode == 200) {
+      // Decode the JSON response.
+      final jsonResponse = json.decode(response.body);
+
+      // Check that jsonResponse is a Map and contains a "data" property that is a List.
+      if (jsonResponse is Map<String, dynamic> &&
+          jsonResponse['data'] is List<dynamic>) {
+        return jsonResponse['data'];
+      } else {
+        throw Exception('Unexpected JSON structure: "data" list not found.');
+      }
+    } else {
+      throw Exception(
+          'Failed to load data, status code: ${response.statusCode}');
+    }
+  } catch (error) {
+    throw Exception('Error fetching data: $error');
+  }
+}
+
+/// Fetches the JSON list of books from [apiUrl] and returns each book's
+/// specified properties as a List of Map<String, String>.
+Future<List<Map<String, String>>> fetchAndReturnBookList(
+    String apiUrl, List<String> properties) async {
+  // Prepare an empty list to store the books.
+  List<Map<String, String>> bookList = [];
+
+  try {
+    // Assume fetchBookList is defined elsewhere and returns List<dynamic>.
+    List<dynamic> books = await fetchBookList(apiUrl);
+
+    // Process each book.
+    for (var book in books) {
+      if (book is Map<String, dynamic>) {
+        // Create a new map to store the values for the desired properties.
+        Map<String, String> bookData = {};
+        for (var property in properties) {
+          // Retrieve each property value, convert it to a string, or default to an empty string.
+          bookData[property] = book[property]?.toString() ?? '';
+        }
+        // Add this map to the list.
+        bookList.add(bookData);
+      }
+    }
+  } catch (error) {
+    print('Error: $error');
+  }
+
+  return bookList;
+}
+
 
 void main() {
   runApp(BooksVanilla());
@@ -21,33 +84,15 @@ class BooksVanilla extends StatelessWidget {
 }
 
 class HomePage extends StatelessWidget {
-   HomePage({super.key});
-  final List<Map<String, String>> books = [
-    {
-      'title': 'The Great Gatsby',
-      'author': 'F. Scott Fitzgerald',
-      'image':
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQPhjUyQ760_j4k4sEKfv_7ALMg84oQUpR3eg&s'
-    },
-    {
-      'title': '1984',
-      'author': 'George Orwell',
-      'image':
-      'https://miro.medium.com/v2/resize:fit:800/1*g8s4n-puPV3y-F2b7ilJ_A.jpeg'
-    },
-    {
-      'title': 'To Kill a Mockingbird',
-      'author': 'Harper Lee',
-      'image':
-      'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/To_Kill_a_Mockingbird_%28first_edition_cover%29.jpg/1200px-To_Kill_a_Mockingbird_%28first_edition_cover%29.jpg'
-    },
-    {
-      'title': 'Moby-Dick',
-      'author': 'Herman Melville',
-      'image':
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTm5hiiHoNxojxLBxy2m1qAFf-zGZsYUzO0KQ&s'
-    },
-  ];
+  // The API URL and property to fetch.
+  final String apiUrl = "http://10.144.31.8:8080/api/book/list";
+  List<String> properties = ['title', 'price', 'genre','coverImageUrl','author'];
+
+  // Future that returns the list of books.
+  // Make sure that fetchAndReturnBookList is defined elsewhere.
+  Future<List<Map<String, String>>> _booksFuture() {
+    return fetchAndReturnBookList(apiUrl, properties);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,29 +132,50 @@ class HomePage extends StatelessWidget {
                 ),
               ),
             ),
-            // Books Grid Section
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: GridView.builder(
-                itemCount: books.length,
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,  // number of columns
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                  childAspectRatio: 0.7,
-                ),
-                itemBuilder: (context, index) {
-                  final book = books[index];
-                  return BookCard(
-                    title: book['title']!,
-                    author: book['author']!,
-                    imageUrl: book['image']!,
+            // Books Grid Section wrapped in a FutureBuilder.
+            FutureBuilder<List<Map<String, String>>>(
+              future: _booksFuture(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  // While the future is loading, you can show a loading indicator.
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  // Display error message if something went wrong.
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  // No data case.
+                  return Center(child: Text('No books found.'));
+                } else {
+                  // We have our list of books. Now build the grid.
+                  final books = snapshot.data!;
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: GridView.builder(
+                      itemCount: books.length,
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,  // number of columns
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10,
+                        childAspectRatio: 0.7,
+                      ),
+                      itemBuilder: (context, index) {
+                        var book = books[index];
+                        return BookCard(
+                          // Adjust property keys to your API response keys.
+                          title: book['title'] ?? 'No Title',
+                          author: book['author'] ?? 'No Author',
+                          imageUrl: book['coverImageUrl'] ?? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQPhjUyQ760_j4k4sEKfv_7ALMg84oQUpR3eg&',
+                            synopsis: book['price'] ?? 'No Synopsis',
+                        );
+                      },
+                    ),
                   );
-                },
-              ),
+                }
+              },
             ),
+            // Burger Menu Widget: Assuming it is a valid widget.
             BurguerMenu(),
           ],
         ),
@@ -147,12 +213,14 @@ class BookCard extends StatelessWidget {
   final String title;
   final String author;
   final String imageUrl;
+  final String synopsis;
 
   const BookCard({
     super.key,
     required this.title,
     required this.author,
     required this.imageUrl,
+    required this.synopsis,
   });
 
   @override
@@ -198,6 +266,12 @@ class BookCard extends StatelessWidget {
               author,
               style: TextStyle(color: Colors.grey[700]),
             ),
+          ),
+          Padding(padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Text(
+              synopsis,
+              style: TextStyle(color: Colors.grey[700]),
+          ),
           ),
           SizedBox(height: 8),
         ],
