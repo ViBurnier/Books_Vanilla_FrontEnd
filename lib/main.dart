@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:footer/footer.dart';
+import 'package:footer/footer_view.dart';
 
 
 
@@ -86,7 +88,9 @@ class BooksVanilla extends StatelessWidget {
 class HomePage extends StatelessWidget {
   // The API URL and property to fetch.
   final String apiUrl = "http://10.144.31.8:8080/api/book/list";
-  List<String> properties = ['title', 'price', 'genre','coverImageUrl','author'];
+  final List<String> properties = ['title', 'price', 'genre','coverImageUrl','author'];
+
+  HomePage({super.key});
 
   // Future that returns the list of books.
   // Make sure that fetchAndReturnBookList is defined elsewhere.
@@ -98,90 +102,101 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Books Vanilla'),
+        backgroundColor: Color.fromRGBO(71, 9, 160, 1.0),
+        title: SizedBox(
+          width: 400,
+          height: 400,
+          child: Image.network("https://static.vecteezy.com/system/resources/thumbnails/006/296/747/small/bookshelf-with-books-biography-adventure-novel-poem-fantasy-love-story-detective-art-romance-banner-for-library-book-store-genre-of-literature-illustration-in-flat-style-vector.jpg"),
+        ),toolbarHeight: 200,
+        actions: <Widget>[
+          TextButton(onPressed: (){}, child: Text("Press"))
+        ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            // Featured Book Section
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Color.fromRGBO(139, 218, 123, 1.0),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Livro do Dia",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+      body: FooterView(
+        footer: Footer(child: Text("Copy 2025")
+          ),flex: 1,
+        children: [
+           Column(
+            children:<Widget>[
+              // Featured Book Section
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Color.fromRGBO(139, 218, 123, 1.0),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Livro do Dia",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      "Descubra o Melhor da Literatura!",
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ],
+                      SizedBox(height: 8),
+                      Text(
+                        "Descubra o Melhor da Literatura!",
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            // Books Grid Section wrapped in a FutureBuilder.
-            FutureBuilder<List<Map<String, String>>>(
-              future: _booksFuture(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  // While the future is loading, you can show a loading indicator.
-                  return Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  // Display error message if something went wrong.
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  // No data case.
-                  return Center(child: Text('No books found.'));
-                } else {
-                  // We have our list of books. Now build the grid.
-                  final books = snapshot.data!;
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: GridView.builder(
-                      itemCount: books.length,
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,  // number of columns
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10,
-                        childAspectRatio: 0.7,
-                      ),
-                      itemBuilder: (context, index) {
-                        var book = books[index];
-                        return BookCard(
-                          // Adjust property keys to your API response keys.
-                          title: book['title'] ?? 'No Title',
-                          author: book['author'] ?? 'No Author',
-                          imageUrl: book['coverImageUrl'] ?? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQPhjUyQ760_j4k4sEKfv_7ALMg84oQUpR3eg&',
+              // Books Grid Section wrapped in a FutureBuilder.
+              FutureBuilder<List<Map<String, String>>>(
+                future: _booksFuture(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    // While the future is loading, you can show a loading indicator.
+                    return Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    // Display error message if something went wrong.
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    // No data case.
+                    return Center(child: Text('No books found.'));
+                  } else {
+                    // We have our list of books. Now build the grid.
+                    final books = snapshot.data!;
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: GridView.builder(
+                        itemCount: books.length,
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,  // number of columns
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
+                          childAspectRatio: 0.7,
+                        ),
+                        itemBuilder: (context, index) {
+                          var book = books[index];
+                          return BookCard(
+                            // Adjust property keys to your API response keys.
+                            title: book['title'] ?? 'No Title',
+                            author: book['author'] ?? 'No Author',
+                            imageUrl: book['coverImageUrl'] ?? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQPhjUyQ760_j4k4sEKfv_7ALMg84oQUpR3eg&',
                             synopsis: book['price'] ?? 'No Synopsis',
-                        );
-                      },
-                    ),
-                  );
-                }
-              },
-            ),
-            // Burger Menu Widget: Assuming it is a valid widget.
-            BurguerMenu(),
-          ],
-        ),
-      ),
-      bottomNavigationBar: Footer(),
-    );
+                          );
+                        },
+                      ),
+                    );
+                  }
+                },
+              ),
+              // Burger Menu Widget: Assuming it is a valid widget.
+              BurguerMenu(),
+            ],
+          ),
+        ],
+      )
+      );
   }
 }
 
@@ -194,20 +209,6 @@ class BurguerMenu extends StatelessWidget {
   }
 }
 
-
-class Footer extends StatelessWidget{
-  const Footer({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-
-    return Container(
-        color: Color.fromRGBO(41, 41, 41, 1.0),
-        child: Text("Copy Books Vanilla 2025", style: TextStyle(color: Color.fromRGBO(
-            255, 255, 255, 1.0))),
-    );
-  }
-}
 
 class BookCard extends StatelessWidget {
   final String title;
