@@ -12,6 +12,7 @@ class Login extends StatefulWidget {
 }
 
 class _MyAppState extends State<Login> {
+
   String _username = '';
   String _password = '';
   bool _isLoggedIn = false;
@@ -88,6 +89,7 @@ class _MyAppState extends State<Login> {
     );
   }
 }
+
 
 class LoginPage extends StatelessWidget {
   final Function(String) setUsername;
