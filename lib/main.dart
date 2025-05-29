@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:footer/footer.dart';
 import 'package:footer/footer_view.dart';
+import 'login.dart';
 
 
 
@@ -80,17 +81,17 @@ class BooksVanilla extends StatelessWidget {
         primarySwatch: Colors.teal,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: HomePage(),
+      home: Home(),
     );
   }
 }
 
-class HomePage extends StatelessWidget {
+class Home extends StatelessWidget {
   // The API URL and property to fetch.
   final String apiUrl = "http://10.144.31.8:8080/api/book/list";
   final List<String> properties = ['title', 'price', 'genre','coverImageUrl','author'];
 
-  HomePage({super.key});
+  Home({super.key});
 
   // Future that returns the list of books.
   // Make sure that fetchAndReturnBookList is defined elsewhere.
@@ -109,7 +110,13 @@ class HomePage extends StatelessWidget {
           child: Image.network("https://static.vecteezy.com/system/resources/thumbnails/006/296/747/small/bookshelf-with-books-biography-adventure-novel-poem-fantasy-love-story-detective-art-romance-banner-for-library-book-store-genre-of-literature-illustration-in-flat-style-vector.jpg"),
         ),toolbarHeight: 200,
         actions: <Widget>[
-          TextButton(onPressed: (){}, child: Text("Press"))
+          TextButton(onPressed: (){
+            // Navigate to the Login screen when the button is pressed
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Login()),
+            );
+          }, child: Text("Press"))
         ],
       ),
       body: FooterView(
