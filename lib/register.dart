@@ -3,13 +3,15 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'main.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
-class Register extends StatefulWidget {
-  const Register({super.key});
+String parseDate(String birth){
+  DateFormat inputFormat = DateFormat("dd/MM/yyyy");
+  DateFormat outputFormat = DateFormat("yyyy-MM-dd");
 
-  @override
-  State<Register> createState() => _MyAppState();
-
+  DateTime dateParse = inputFormat.parse(birth);
+  String dateFinal = outputFormat.format(dateParse);
+  return dateFinal;
 }
 
 class _MyAppState extends State<Register>{
@@ -19,9 +21,59 @@ class _MyAppState extends State<Register>{
   String _cpf = '';
   String _tel = '';
   String _address = '';
-  String birth = '';
+  String _birth = '';
 
   bool _isLoggedIn = false;
+
+  void setUsername(String username) {
+    setState(() {
+      _username = username;
+    });
+  }
+
+  void setPassword(String password) {
+    setState(() {
+      _password = password;
+    });
+  }
+
+  void setEmail(String email){
+    setState((){
+      _email = email;
+    });
+  }
+
+ void setCpf(String cpf){
+    setState(() {
+      _cpf = cpf;
+    });
+ }
+
+ void setTel(String tel){
+    setState(() {
+      _tel = tel;
+    });
+ }
+
+ void setAddress(String address){
+    setState(() {
+      _address = address;
+    });
+ }
+
+ void setBirth(String birth){
+    setState(() {
+      _birth = parseDate(birth);
+    });
+ }
+}
+
+class Register extends StatefulWidget {
+  const Register({super.key});
+
+  @override
+  State<Register> createState() => _MyAppState();
+
 }
 
 Future<void> register() async{
@@ -35,15 +87,8 @@ Future<void> register() async{
     'cpf': _cpf,
     'tel': _tel,
     'address': _address,
-
-    //eu preciso que o user possa, digitar a data em formato dd/mm/yyyy
-    //o banco espera format ISO yyyy-mm-dd
-    //tenho que, em algum momento, converter para ISO ->
-    //1-> em qual momento faco isso
-    //2-> posso criar uma function para isso? (acho que sim)
-
-    //ideia: DateFormatField, e no build receber a date
-  })
+    'birth': _birth,
+  });
 
   final response = await http.post(
     url,
@@ -52,5 +97,9 @@ Future<void> register() async{
       'Accept': 'application/json',
     },
     body: body
-  )
+  );
+
+  setState((){
+
+  })
 }
