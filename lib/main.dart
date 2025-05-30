@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:footer/footer.dart';
 import 'package:footer/footer_view.dart';
 import 'login.dart';
+import 'register.dart';
 
 
 
@@ -116,7 +117,21 @@ class Home extends StatelessWidget {
               context,
               MaterialPageRoute(builder: (context) => Login()),
             );
-          }, child: Text("Press"))
+          }, child: Text("Login")),
+
+          TextButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Register()),
+              );
+            },
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.green,
+            ),
+            child: Text("Register"),
+          )
+
         ],
       ),
       body: FooterView(

@@ -129,6 +129,7 @@ class LoginPage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+
                 TextField(
                   style: const TextStyle(fontSize: 20),
                   decoration: const InputDecoration(
@@ -136,6 +137,7 @@ class LoginPage extends StatelessWidget {
                   ),
                   onChanged: (value) => setUsername(value),
                 ),
+
                 TextField(
                   style: const TextStyle(fontSize: 20),
                   decoration: const InputDecoration(
@@ -144,6 +146,7 @@ class LoginPage extends StatelessWidget {
                   obscureText: true,
                   onChanged: (value) => setPassword(value),
                 ),
+
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () => login(),
