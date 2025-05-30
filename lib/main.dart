@@ -117,19 +117,28 @@ class Home extends StatelessWidget {
               context,
               MaterialPageRoute(builder: (context) => Login()),
             );
-          }, child: Text("Login")),
+          },
+          style: TextButton.styleFrom(
+            foregroundColor: Colors.black,
+            backgroundColor: Colors.white
+          ),
+          child: Text("Login")),
 
-          TextButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Register()),
-              );
-            },
-            style: TextButton.styleFrom(
-              foregroundColor: Colors.green,
-            ),
-            child: Text("Register"),
+          Padding(
+            padding: EdgeInsets.all(16.0),
+            child:  TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Register()),
+                );
+              },
+              style: TextButton.styleFrom(
+                  foregroundColor: Colors.black,
+                  backgroundColor: Colors.white,
+              ),
+              child: Text("Register"),
+            )
           )
 
         ],
