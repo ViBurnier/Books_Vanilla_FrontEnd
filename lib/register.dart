@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'main.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-
+import 'login.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -33,7 +33,6 @@ class _MyAppState extends State<Register>{
   String _address = '';
   String _birth = '';
 
-  bool _isLoggedIn = false;
   String _errorMessage = '';
 
 
@@ -88,7 +87,7 @@ class _MyAppState extends State<Register>{
 
   Future<void> register() async{
     await Future.delayed(const Duration(seconds: 1));
-    final url = Uri.parse('http://10.144.31.8:8080/api/account/create');
+    final url = Uri.parse('http://192.168.1.2:8080/api/account/create');
 
     final body = json.encode({
       'name': _username,
@@ -112,22 +111,11 @@ class _MyAppState extends State<Register>{
 
     setState(() {
       if (response.statusCode == 200) {
-        _isLoggedIn = true;
         _errorMessage = '';
-        print('Login successful: ${response.body}');
+        print('Register successful: ${response.body}');
       } else {
-        _isLoggedIn = false;
-        _errorMessage = 'Invalid username or password';
+        _errorMessage = 'Invalid field';
       }
-    });
-  }
-
-  void logout() {
-    setState(() {
-      _isLoggedIn = false;
-      _username = '';
-      _password = '';
-      _errorMessage = '';
     });
   }
 
@@ -138,9 +126,7 @@ class _MyAppState extends State<Register>{
       theme: ThemeData(
         primarySwatch: Colors.orange,
       ),
-      home: _isLoggedIn
-          ? HomePage(username: _username, onLogout: logout)
-          : RegisterPage(
+         home: RegisterPage(
           setUsername: setUsername,
           setPassword: setPassword,
           setPassword2: setPassword2,
@@ -149,8 +135,8 @@ class _MyAppState extends State<Register>{
           setTel: setTel,
           setAddress: setAddress,
           setBirth: setBirth,
-          errorMessage: _errorMessage,
-          register: register
+          register: register,
+          errorMessage: _errorMessage
       ),
     );
   }
@@ -165,7 +151,23 @@ class RegisterPage extends StatelessWidget{
   final Function(String) setTel;
   final Function(String) setAddress;
   final Function(String) setBirth;
+  final Function() register;
   final String errorMessage;
+
+  const RegisterPage({
+    super.key,
+    required this.setUsername,
+    required this.setPassword,
+    required this.setPassword2,
+    required this.setEmail,
+    required this.setCpf,
+    required this.setTel,
+    required this.setAddress,
+    required this.setBirth,
+    required this.register,
+    required this.errorMessage,
+  });
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -182,7 +184,7 @@ class RegisterPage extends StatelessWidget{
       body: Center(
         child: Padding(padding: const EdgeInsets.all(16.0),
         child: Container(
-          constraints: const BoxConstraints(maxWidth: 350, maxHeight: 500),
+          constraints: const BoxConstraints(maxWidth: 350, maxHeight: 600),
           decoration: BoxDecoration(
             color: Colors.orangeAccent,
             borderRadius: BorderRadius.circular(10)
@@ -218,7 +220,7 @@ class RegisterPage extends StatelessWidget{
                     labelText: 'rewrite your password'
                 ),
 
-                onChanged: (value) => setPassword(value),
+                onChanged: (value) => setPassword2(value),
               ),
 
               TextField(
@@ -271,7 +273,7 @@ class RegisterPage extends StatelessWidget{
                 onChanged: (value) => setBirth(value),
               ),
               const SizedBox(height: 20),
-              ElevatedButton(onPressed: () => register(), child: const Text("Create account"),),
+              ElevatedButton(onPressed: () => register(), child: const Text("create account successfully"),),
               if(errorMessage.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.only(top: 10),
@@ -290,51 +292,7 @@ class RegisterPage extends StatelessWidget{
     );
   }
 
-  final Function() register;
 
-  const RegisterPage({
-    super.key,
-    required this.setUsername,
-    required this.setPassword,
-    required this.setPassword2,
-    required this.setEmail,
-    required this.setCpf,
-    required this.setTel,
-    required this.setAddress,
-    required this.setBirth,
-    required this.errorMessage,
-    required this.register,
-  });
 }
 
-
-class HomePage extends StatelessWidget {
-  final String username;
-  final Function() onLogout;
-
-  const HomePage({super.key, required this.username, required this.onLogout});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home'),
-        automaticallyImplyLeading: false,
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Bem Vindo, $username!'),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () => onLogout(),
-              child: const Text('Logout'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
