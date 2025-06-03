@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:footer/footer.dart';
 import 'package:footer/footer_view.dart';
 import 'login.dart';
+import 'register.dart';
 
 
 
@@ -88,7 +89,7 @@ class BooksVanilla extends StatelessWidget {
 
 class Home extends StatelessWidget {
   // The API URL and property to fetch.
-  final String apiUrl = "http://10.144.31.8:8080/api/book/list";
+  final String apiUrl = "http://192.168.1.2:8080/api/book/list";
   final List<String> properties = ['title', 'price', 'genre','coverImageUrl','author'];
 
   Home({super.key});
@@ -116,7 +117,30 @@ class Home extends StatelessWidget {
               context,
               MaterialPageRoute(builder: (context) => Login()),
             );
-          }, child: Text("Press"))
+          },
+          style: TextButton.styleFrom(
+            foregroundColor: Colors.black,
+            backgroundColor: Colors.white
+          ),
+          child: Text("Login")),
+
+          Padding(
+            padding: EdgeInsets.all(16.0),
+            child:  TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Register()),
+                );
+              },
+              style: TextButton.styleFrom(
+                  foregroundColor: Colors.black,
+                  backgroundColor: Colors.white,
+              ),
+              child: Text("Register"),
+            )
+          )
+
         ],
       ),
       body: FooterView(

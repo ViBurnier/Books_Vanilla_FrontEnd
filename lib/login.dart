@@ -12,6 +12,7 @@ class Login extends StatefulWidget {
 }
 
 class _MyAppState extends State<Login> {
+
   String _username = '';
   String _password = '';
   bool _isLoggedIn = false;
@@ -31,7 +32,7 @@ class _MyAppState extends State<Login> {
 
   Future<void> login() async {
     await Future.delayed(const Duration(seconds: 1));
-    final url = Uri.parse('http://10.144.31.8:8080/api/account/login');
+    final url = Uri.parse('http://192.168.1.2:8080/api/account/login');
 
     // Create the request body
     final body = json.encode({
@@ -89,6 +90,7 @@ class _MyAppState extends State<Login> {
   }
 }
 
+
 class LoginPage extends StatelessWidget {
   final Function(String) setUsername;
   final Function(String) setPassword;
@@ -127,6 +129,7 @@ class LoginPage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+
                 TextField(
                   style: const TextStyle(fontSize: 20),
                   decoration: const InputDecoration(
@@ -134,6 +137,7 @@ class LoginPage extends StatelessWidget {
                   ),
                   onChanged: (value) => setUsername(value),
                 ),
+
                 TextField(
                   style: const TextStyle(fontSize: 20),
                   decoration: const InputDecoration(
@@ -142,6 +146,7 @@ class LoginPage extends StatelessWidget {
                   obscureText: true,
                   onChanged: (value) => setPassword(value),
                 ),
+
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () => login(),
