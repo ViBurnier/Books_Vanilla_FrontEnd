@@ -110,6 +110,13 @@ class _MyAppState extends State<Register>{
     setState(() {
       if (response.statusCode == 200) {
         _message = 'Register successful';
+
+        // Navigate to the Login screen when the button is pressed
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Login()),
+          );
+
       } else {
         final dataMessage = jsonDecode(utf8.decode(response.bodyBytes));
         _message = dataMessage['message'] ?? 'Erro de mensagem';
@@ -275,13 +282,15 @@ class RegisterPage extends StatelessWidget{
 
               const SizedBox(height: 20),
               ElevatedButton(onPressed: () => register(),
-                child: Text("create account successfully"),),
-              if(message.isNotEmpty)
+                child: Text("create account successfully"),
+
+              ),
+
                 Padding(
                   padding: const EdgeInsets.only(top: 10),
                   child: Text(
                     message,
-                    style: const TextStyle(color: Colors.red),
+                    style: const TextStyle(color: Colors.black, fontSize: 24),
                   ),
                 ),
             ],
