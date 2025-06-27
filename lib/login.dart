@@ -12,7 +12,6 @@ class Login extends StatefulWidget {
 }
 
 class _MyAppState extends State<Login> {
-
   String _username = '';
   String _password = '';
   bool _isLoggedIn = false;
@@ -35,10 +34,7 @@ class _MyAppState extends State<Login> {
     final url = Uri.parse('http://192.168.1.2:8080/api/account/login');
 
     // Create the request body
-    final body = json.encode({
-      'email': _username,
-      'password': _password,
-    });
+    final body = json.encode({'email': _username, 'password': _password});
 
     final response = await http.post(
       url,
@@ -48,7 +44,6 @@ class _MyAppState extends State<Login> {
       },
       body: body,
     );
-
 
     setState(() {
       if (response.statusCode == 200) {
@@ -75,9 +70,7 @@ class _MyAppState extends State<Login> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Login App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: ThemeData(primarySwatch: Colors.blue),
       home: _isLoggedIn
           ? HomePage(username: _username, onLogout: logout)
           : LoginPage(
@@ -89,7 +82,6 @@ class _MyAppState extends State<Login> {
     );
   }
 }
-
 
 class LoginPage extends StatelessWidget {
   final Function(String) setUsername;
@@ -108,59 +100,84 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Login'),
-        actions: [TextButton(onPressed: (){
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => Home()),
-          );
-        }, child: Text("Voltar"))],
-      ),
+      appBar: AppBar(title: const Text('')),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Container(
-            constraints: const BoxConstraints(maxWidth: 300, maxHeight: 300),
+            constraints: const BoxConstraints(maxWidth: 500, maxHeight: 500),
             decoration: BoxDecoration(
               color: Colors.lightBlue,
               borderRadius: BorderRadius.circular(20),
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
+            child: Padding(
+              padding: EdgeInsetsGeometry.fromLTRB(20.0, 20.0, 20.0, 20.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
 
-                TextField(
-                  style: const TextStyle(fontSize: 20),
-                  decoration: const InputDecoration(
-                    labelText: 'Username',
-                  ),
-                  onChanged: (value) => setUsername(value),
-                ),
+                  /*Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(16),
+                    child: Center( child: Text('Login', style: TextStyle(color: Colors.white))),
+                    decoration: BoxDecoration(color: Colors.black),
+                  ),*/
 
-                TextField(
-                  style: const TextStyle(fontSize: 20),
-                  decoration: const InputDecoration(
-                    labelText: 'Password',
-                  ),
-                  obscureText: true,
-                  onChanged: (value) => setPassword(value),
-                ),
+                  const SizedBox(height: 26.0),
 
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () => login(),
-                  child: const Text('Login'),
-                ),
-                if (errorMessage.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: Text(
-                      errorMessage,
-                      style: const TextStyle(color: Colors.red),
+                  TextFormField(
+                    style: const TextStyle(fontSize: 20),
+                    decoration: const InputDecoration(
+                      fillColor: Colors.white,
+                      filled: true,
+                      labelText: 'Username',
+                      border: OutlineInputBorder(),
                     ),
+                    onChanged: (value) => setUsername(value),
                   ),
-              ],
+
+                  const SizedBox(height: 26.0),
+
+                  TextFormField(
+                    style: const TextStyle(fontSize: 20),
+                    decoration: const InputDecoration(
+                      fillColor: Colors.white,
+                      filled: true,
+                      labelText: 'Password',
+                      border: OutlineInputBorder(),
+                    ),
+                    obscureText: true,
+                    onChanged: (value) => setPassword(value),
+                  ),
+
+                  const SizedBox(height: 50.0),
+
+                  ElevatedButton(
+                    onPressed: () => login(),
+                    child: const Text('Login'),
+                  ),
+                  if (errorMessage.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: Text(
+                        errorMessage,
+                        style: const TextStyle(color: Colors.red),
+                      ),
+                    ),
+
+                  const SizedBox(height: 50.0),
+
+                  IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Home()),
+                        );
+                      },
+                      icon: Icon(Icons.arrow_back)
+                  )
+                ],
+              ),
             ),
           ),
         ),
