@@ -11,10 +11,9 @@ class Register extends StatefulWidget {
 
   @override
   State<Register> createState() => _MyAppState();
-
 }
 
-String parseDate(String birth){
+String parseDate(String birth) {
   DateFormat inputFormat = DateFormat("dd/MM/yyyy");
   DateFormat outputFormat = DateFormat("yyyy-MM-dd");
 
@@ -23,7 +22,7 @@ String parseDate(String birth){
   return dateFinal;
 }
 
-class _MyAppState extends State<Register>{
+class _MyAppState extends State<Register> {
   String _username = '';
   String _email = '';
   String _password = '';
@@ -34,7 +33,6 @@ class _MyAppState extends State<Register>{
   String _birth = '';
 
   String _errorMessage = '';
-
 
   void setUsername(String username) {
     setState(() {
@@ -54,38 +52,37 @@ class _MyAppState extends State<Register>{
     });
   }
 
-  void setEmail(String email){
-    setState((){
+  void setEmail(String email) {
+    setState(() {
       _email = email;
     });
   }
 
- void setCpf(String cpf){
+  void setCpf(String cpf) {
     setState(() {
       _cpf = cpf;
     });
- }
+  }
 
- void setTel(String tel){
+  void setTel(String tel) {
     setState(() {
       _tel = tel;
     });
- }
+  }
 
- void setAddress(String address){
+  void setAddress(String address) {
     setState(() {
       _address = address;
     });
- }
+  }
 
- void setBirth(String birth){
+  void setBirth(String birth) {
     setState(() {
       _birth = parseDate(birth);
     });
- }
+  }
 
-
-  Future<void> register() async{
+  Future<void> register() async {
     await Future.delayed(const Duration(seconds: 1));
     final url = Uri.parse('http://192.168.1.2:8080/api/account/create');
 
@@ -101,12 +98,12 @@ class _MyAppState extends State<Register>{
     });
 
     final response = await http.post(
-        url,
-        headers: {
-          'Content-Type': 'application/json', // Set the content type to JSON
-          'Accept': 'application/json',
-        },
-        body: body
+      url,
+      headers: {
+        'Content-Type': 'application/json', // Set the content type to JSON
+        'Accept': 'application/json',
+      },
+      body: body,
     );
 
     setState(() {
@@ -123,26 +120,24 @@ class _MyAppState extends State<Register>{
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Register App',
-      theme: ThemeData(
-        primarySwatch: Colors.orange,
-      ),
-         home: RegisterPage(
-          setUsername: setUsername,
-          setPassword: setPassword,
-          setPassword2: setPassword2,
-          setEmail: setEmail,
-          setCpf: setCpf,
-          setTel: setTel,
-          setAddress: setAddress,
-          setBirth: setBirth,
-          register: register,
-          errorMessage: _errorMessage
+      theme: ThemeData(primarySwatch: Colors.lightBlue),
+      home: RegisterPage(
+        setUsername: setUsername,
+        setPassword: setPassword,
+        setPassword2: setPassword2,
+        setEmail: setEmail,
+        setCpf: setCpf,
+        setTel: setTel,
+        setAddress: setAddress,
+        setBirth: setBirth,
+        register: register,
+        errorMessage: _errorMessage,
       ),
     );
   }
 }
 
-class RegisterPage extends StatelessWidget{
+class RegisterPage extends StatelessWidget {
   final Function(String) setUsername;
   final Function(String) setPassword;
   final Function(String) setPassword2;
@@ -173,126 +168,149 @@ class RegisterPage extends StatelessWidget{
     return Scaffold(
       appBar: AppBar(
         title: const Text("Register"),
-        actions: [TextButton(onPressed: (){
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => Home()),
-          );
-        }, child: Text("Voltar"))],
-      ),
+        centerTitle: true,
+        backgroundColor: Colors.black,
+        foregroundColor: Colors.white,
 
-      body: Center(
-        child: Padding(padding: const EdgeInsets.all(16.0),
-        child: Container(
-          constraints: const BoxConstraints(maxWidth: 350, maxHeight: 600),
-          decoration: BoxDecoration(
-            color: Colors.orangeAccent,
-            borderRadius: BorderRadius.circular(10)
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-
-              TextField(
-                style: const TextStyle(fontSize: 20),
-                decoration: const InputDecoration(
-                  labelText: 'Your name',
-                ),
-                onChanged: (value) => setUsername(value)
-              ),
-
-              TextField(
-                style: const TextStyle(fontSize: 20),
-
-                decoration: const InputDecoration(
-                  labelText: 'choice your password'
-                ),
-
-                obscureText: true,
-
-                onChanged: (value) => setPassword(value),
-              ),
-
-              TextField(
-                style: const TextStyle(fontSize: 20),
-
-                decoration: const InputDecoration(
-                    labelText: 'rewrite your password'
-                ),
-
-                onChanged: (value) => setPassword2(value),
-              ),
-
-              TextField(
-                style: const TextStyle(fontSize: 20),
-
-                decoration: const InputDecoration(
-                    labelText: 'Email'
-                ),
-
-                onChanged: (value) => setEmail(value),
-              ),
-
-              TextField(
-                style: const TextStyle(fontSize: 20),
-
-                decoration: const InputDecoration(
-                    labelText: 'Cpf'
-                ),
-
-                onChanged: (value) => setCpf(value),
-              ),
-
-              TextField(
-                style: const TextStyle(fontSize: 20),
-
-                decoration: const InputDecoration(
-                    labelText: 'Telefone'
-                ),
-
-                onChanged: (value) => setTel(value),
-              ),
-
-              TextField(
-                style: const TextStyle(fontSize: 20),
-
-                decoration: const InputDecoration(
-                    labelText: 'Address'
-                ),
-
-                onChanged: (value) => setAddress(value),
-              ),
-
-              TextField(
-                style: const TextStyle(fontSize: 20),
-
-                decoration: const InputDecoration(
-                    labelText: 'Birth'
-                ),
-
-                onChanged: (value) => setBirth(value),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(onPressed: () => register(), child: const Text("create account successfully"),),
-              if(errorMessage.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(top: 10),
-                  child: Text(
-                    errorMessage,
-                    style: const TextStyle(color: Colors.red),
-                  ),
-                ),
-            ],
-          )
+        leading: IconButton(
+          iconSize: 30.0,
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Home()),
+            );
+          },
+          icon: Icon(Icons.arrow_back),
         ),
-
-
       ),
+backgroundColor: Colors.lightBlue,
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Container(
+            constraints: const BoxConstraints(maxWidth: 350, maxHeight: 700),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black,
+                  spreadRadius: 2,
+                  blurRadius: 5,
+                  offset: Offset(0, 3), // deslocamento da sombra
+                ),
+              ],
+            ),
+
+            child: Padding(
+              padding: EdgeInsetsGeometry.fromLTRB(20.0, 20.0, 20.0, 20.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextFormField(
+                    style: const TextStyle(fontSize: 20),
+                    decoration: const InputDecoration(
+                      labelText: 'Nome',
+                      border: OutlineInputBorder(),
+                    ),
+                    onChanged: (value) => setUsername(value),
+                  ),
+
+                  const SizedBox(height: 16.0),
+
+                  TextFormField(
+                    style: const TextStyle(fontSize: 20),
+
+                    decoration: const InputDecoration(
+                      labelText: 'Senha',
+                      border: OutlineInputBorder(),
+                    ),
+
+                    obscureText: true,
+
+                    onChanged: (value) => setPassword(value),
+                  ),
+                  const SizedBox(height: 16.0),
+                  TextFormField(
+                    style: const TextStyle(fontSize: 20),
+
+                    decoration: const InputDecoration(
+                      labelText: 'Repita a senha',
+                      border: OutlineInputBorder(),
+                    ),
+
+                    onChanged: (value) => setPassword2(value),
+                  ),
+                  const SizedBox(height: 16.0),
+                  TextFormField(
+                    style: const TextStyle(fontSize: 20),
+
+                    decoration: const InputDecoration(labelText: 'Email',
+                      border: OutlineInputBorder(),),
+
+                    onChanged: (value) => setEmail(value),
+                  ),
+                  const SizedBox(height: 16.0),
+                  TextFormField(
+                    style: const TextStyle(fontSize: 20),
+
+                    decoration: const InputDecoration(labelText: 'Cpf',
+                      border: OutlineInputBorder(),),
+
+                    onChanged: (value) => setCpf(value),
+                  ),
+                  const SizedBox(height: 16.0),
+                  TextFormField(
+                    style: const TextStyle(fontSize: 20),
+
+                    decoration: const InputDecoration(labelText: 'Telefone',
+                      border: OutlineInputBorder(),),
+
+                    onChanged: (value) => setTel(value),
+                  ),
+                  const SizedBox(height: 16.0),
+                  TextFormField(
+                    style: const TextStyle(fontSize: 20),
+
+                    decoration: const InputDecoration(labelText: 'Address',
+                      border: OutlineInputBorder(),),
+
+                    onChanged: (value) => setAddress(value),
+                  ),
+                  const SizedBox(height: 16.0),
+                  TextFormField(
+                    style: const TextStyle(fontSize: 20),
+
+                    decoration: const InputDecoration(labelText: 'Birth',
+                      border: OutlineInputBorder(),),
+
+                    onChanged: (value) => setBirth(value),
+                  ),
+                  const SizedBox(height: 36.0),
+
+
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.black
+                    ),
+                    onPressed: () => register(),
+                    child: const Text("Cadastrar"),
+                  ),
+                  if (errorMessage.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: Text(
+                        errorMessage,
+                        style: const TextStyle(color: Colors.red),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
-
-
 }
-
-

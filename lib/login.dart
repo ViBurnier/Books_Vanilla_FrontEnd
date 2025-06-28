@@ -1,3 +1,4 @@
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -74,11 +75,11 @@ class _MyAppState extends State<Login> {
       home: _isLoggedIn
           ? HomePage(username: _username, onLogout: logout)
           : LoginPage(
-              setUsername: setUsername,
-              setPassword: setPassword,
-              login: login,
-              errorMessage: _errorMessage,
-            ),
+        setUsername: setUsername,
+        setPassword: setPassword,
+        login: login,
+        errorMessage: _errorMessage,
+      ),
     );
   }
 }
@@ -125,6 +126,14 @@ class LoginPage extends StatelessWidget {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black,
+                  spreadRadius: 2,
+                  blurRadius: 5,
+                  offset: Offset(0, 3), // deslocamento da sombra
+                ),
+              ],
             ),
             child: Padding(
               padding: EdgeInsetsGeometry.fromLTRB(20.0, 20.0, 20.0, 20.0),
@@ -183,7 +192,7 @@ class LoginPage extends StatelessWidget {
                       ),
                     ),
 
-                  const SizedBox(height: 20.0),
+                  const SizedBox(height: 50.0),
 
                   InkWell(
                     child: Text(
@@ -193,7 +202,7 @@ class LoginPage extends StatelessWidget {
                     onTap: () => {Navigator.pushNamed(context, '')},
                   ),
 
-                  const SizedBox(height: 50.0),
+                  const SizedBox(height: 20.0),
 
                   Text('Não tem uma conta?'),
                   InkWell(

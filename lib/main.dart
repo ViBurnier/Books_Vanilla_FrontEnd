@@ -113,11 +113,11 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromRGBO(71, 9, 160, 1.0),
+        backgroundColor: Colors.lightBlue,
         title: SizedBox(
           width: 400,
           height: 400,
-          child: Image.network("https://static.vecteezy.com/system/resources/thumbnails/006/296/747/small/bookshelf-with-books-biography-adventure-novel-poem-fantasy-love-story-detective-art-romance-banner-for-library-book-store-genre-of-literature-illustration-in-flat-style-vector.jpg"),
+          child: Image.network("https://i.imgur.com/h7f6grg.png"),
         ),toolbarHeight: 200,
         actions: <Widget>[
           TextButton(onPressed: (){
