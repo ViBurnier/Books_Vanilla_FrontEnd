@@ -74,11 +74,11 @@ class _MyAppState extends State<Login> {
       home: _isLoggedIn
           ? HomePage(username: _username, onLogout: logout)
           : LoginPage(
-        setUsername: setUsername,
-        setPassword: setPassword,
-        login: login,
-        errorMessage: _errorMessage,
-      ),
+              setUsername: setUsername,
+              setPassword: setPassword,
+              login: login,
+              errorMessage: _errorMessage,
+            ),
     );
   }
 }
@@ -100,14 +100,30 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('')),
+      appBar: AppBar(
+        title: Text('Login'),
+        centerTitle: true,
+        backgroundColor: Colors.black,
+        foregroundColor: Colors.white,
+        leading: IconButton(
+          iconSize: 30.0,
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Home()),
+            );
+          },
+          icon: Icon(Icons.arrow_back),
+        ),
+      ),
+      backgroundColor: Colors.lightBlue,
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Container(
             constraints: const BoxConstraints(maxWidth: 500, maxHeight: 500),
             decoration: BoxDecoration(
-              color: Colors.lightBlue,
+              color: Colors.white,
               borderRadius: BorderRadius.circular(20),
             ),
             child: Padding(
@@ -115,20 +131,18 @@ class LoginPage extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-
                   /*Container(
                     width: double.infinity,
                     padding: EdgeInsets.all(16),
                     child: Center( child: Text('Login', style: TextStyle(color: Colors.white))),
                     decoration: BoxDecoration(color: Colors.black),
                   ),*/
-
                   const SizedBox(height: 26.0),
 
                   TextFormField(
                     style: const TextStyle(fontSize: 20),
                     decoration: const InputDecoration(
-                      fillColor: Colors.white,
+                      fillColor: Colors.white12,
                       filled: true,
                       labelText: 'Username',
                       border: OutlineInputBorder(),
@@ -141,7 +155,7 @@ class LoginPage extends StatelessWidget {
                   TextFormField(
                     style: const TextStyle(fontSize: 20),
                     decoration: const InputDecoration(
-                      fillColor: Colors.white,
+                      fillColor: Colors.white12,
                       filled: true,
                       labelText: 'Password',
                       border: OutlineInputBorder(),
@@ -153,6 +167,10 @@ class LoginPage extends StatelessWidget {
                   const SizedBox(height: 50.0),
 
                   ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.black, // Cor do texto/ícone
+                    ),
                     onPressed: () => login(),
                     child: const Text('Login'),
                   ),
@@ -165,17 +183,35 @@ class LoginPage extends StatelessWidget {
                       ),
                     ),
 
+                  const SizedBox(height: 20.0),
+
+                  InkWell(
+                    child: Text(
+                      'Esqueci a senha',
+                      style: TextStyle(color: Colors.lightBlueAccent),
+                    ),
+                    onTap: () => {Navigator.pushNamed(context, '')},
+                  ),
+
                   const SizedBox(height: 50.0),
 
-                  IconButton(
+                  Text('Não tem uma conta?'),
+                  InkWell(
+                    child: Text(
+                      'Sing Up',
+                      style: TextStyle(color: Colors.lightBlueAccent),
+                    ),
+                    onTap: () => {Navigator.pushNamed(context, '/register')},
+                  ),
+
+                  const SizedBox(height: 10.0),
+
+                  /*        IconButton(
+                    color: Colors.black,
+                      iconSize: 30.0,
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => Home()),
-                        );
-                      },
-                      icon: Icon(Icons.arrow_back)
-                  )
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => Home()),);
+                      }, icon: Icon(Icons.arrow_back))*/
                 ],
               ),
             ),

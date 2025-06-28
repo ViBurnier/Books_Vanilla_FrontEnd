@@ -82,7 +82,16 @@ class BooksVanilla extends StatelessWidget {
         primarySwatch: Colors.teal,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: Home(),
+     /* home: Home(),*/
+
+      initialRoute: '/',
+
+      routes: {
+        '/': (context) => Home(),
+        '/login': (context) => const Login(),
+        '/register': (context) => const Register(),
+
+      },
     );
   }
 }
