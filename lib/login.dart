@@ -1,9 +1,10 @@
-
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'main.dart';
 import 'package:http/http.dart' as http;
+
+import 'register.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -75,11 +76,11 @@ class _MyAppState extends State<Login> {
       home: _isLoggedIn
           ? HomePage(username: _username, onLogout: logout)
           : LoginPage(
-        setUsername: setUsername,
-        setPassword: setPassword,
-        login: login,
-        errorMessage: _errorMessage,
-      ),
+              setUsername: setUsername,
+              setPassword: setPassword,
+              login: login,
+              errorMessage: _errorMessage,
+            ),
     );
   }
 }
@@ -205,14 +206,26 @@ class LoginPage extends StatelessWidget {
                   const SizedBox(height: 20.0),
 
                   Text('Não tem uma conta?'),
-                  InkWell(
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Register()),
+                      );
+                    },
+                    child: Text(
+                      'Sing Up',
+                      style: TextStyle(color: Colors.lightBlueAccent),
+                    ),
+                  ),
+
+                  /*InkWell(
                     child: Text(
                       'Sing Up',
                       style: TextStyle(color: Colors.lightBlueAccent),
                     ),
                     onTap: () => {Navigator.pushNamed(context, '/register')},
-                  ),
-
+                  ),*/
                   const SizedBox(height: 10.0),
 
                   /*        IconButton(

@@ -118,22 +118,21 @@ class Home extends StatelessWidget {
           width: 400,
           height: 400,
           child: Image.network("https://i.imgur.com/h7f6grg.png"),
-        ),toolbarHeight: 200,
+        ), toolbarHeight: 200,
+        foregroundColor: Colors.white,
         actions: <Widget>[
-          TextButton(onPressed: (){
-            // Navigate to the Login screen when the button is pressed
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Login()),
-            );
-          },
-          style: TextButton.styleFrom(
-            foregroundColor: Colors.black,
-            backgroundColor: Colors.white
+          IconButton(
+            iconSize: 30.0,
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Login()),
+              );
+            },
+            icon: Icon(Icons.account_circle),
           ),
-          child: Text("Login")),
 
-          Padding(
+          /*Padding(
             padding: EdgeInsets.all(16.0),
             child:  TextButton(
               onPressed: () {
@@ -148,7 +147,7 @@ class Home extends StatelessWidget {
               ),
               child: Text("Register"),
             )
-          )
+          )*/
 
         ],
       ),

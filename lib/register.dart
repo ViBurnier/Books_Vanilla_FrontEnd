@@ -184,7 +184,7 @@ class RegisterPage extends StatelessWidget {
         ),
       ),
 backgroundColor: Colors.lightBlue,
-      body: Center(
+      body: SingleChildScrollView( child: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Container(
@@ -311,6 +311,6 @@ backgroundColor: Colors.lightBlue,
           ),
         ),
       ),
-    );
+    ),);
   }
 }
