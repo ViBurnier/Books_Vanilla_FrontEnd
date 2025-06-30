@@ -6,6 +6,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget{
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      automaticallyImplyLeading: false,
       title: Text(
         titulo,
         style: TextStyle(color: Colors.purple, fontWeight: FontWeight.bold,

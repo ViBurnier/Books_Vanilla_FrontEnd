@@ -25,7 +25,7 @@ class MyDrawer extends StatelessWidget {
             Text("DEcoDE", style: TextStyle(color: Colors.white, fontSize: 20),),
           ),
           myListTile("cadastro", "/cadastro", context),
-          myListTile("detalhes", "/detalhes", context),
+          myListTile("login", "/login", context),
           myListTile("contato", "/contato", context),
           myListTile("sobre", "/sobre", context),
         ],
