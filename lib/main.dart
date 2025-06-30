@@ -103,52 +103,49 @@ class Home extends StatelessWidget {
     return Scaffold(
       appBar: MyAppBar(titulo: "Books Vanilla",),
 
-      body: FutureBuilder<List<Map<String, String>>>(
-
-        future: fetchAndReturnBookList(apiUrl, properties),
-
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            // While the future is loading, you can show a loading indicator.
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            // Display error message if something went wrong.
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            // No data case.
-            return Center(child: Text('No books found.'));
-          } else {
-            // We have our list of books. Now build the grid.
-            final books = snapshot.data!;
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: GridView.builder(
-                itemCount: books.length,
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,  // number of columns
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                  childAspectRatio: 0.7,
-                ),
-                itemBuilder: (context, index) {
-                  var book = books[index];
-                  return BookCard(
-                    // Adjust property keys to your API response keys.
-                    title: book['title'] ?? 'No Title',
-                    author: book['author'] ?? 'No Author',
-                    imageUrl: book['coverImageUrl'] ?? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQPhjUyQ760_j4k4sEKfv_7ALMg84oQUpR3eg&',
-                    synopsis: book['price'] ?? 'No Synopsis',
-                  );
-                },
-              ),
-            );
-          }
-        },
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+          child: FutureBuilder<List<Map<String, String>>>(
+            future: fetchAndReturnBookList(apiUrl, properties),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return Center(child: Text('No books found.'));
+              } else {
+                final books = snapshot.data!;
+                return GridView.builder(
+                  itemCount: books.length,
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                    childAspectRatio: 0.7,
+                  ),
+                  itemBuilder: (context, index) {
+                    var book = books[index];
+                    return BookCard(
+                      title: book['title'] ?? 'No Title',
+                      author: book['author'] ?? 'No Author',
+                      imageUrl: book['coverImageUrl'] ?? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQPhjUyQ760_j4k4sEKfv_7ALMg84oQUpR3eg&',
+                      synopsis: book['price'] ?? 'No Synopsis',
+                    );
+                  },
+                );
+              }
+            },
+          ),
+        ),
       ),
 
       backgroundColor: Colors.white,
+
+
       bottomNavigationBar: MyFooter(),
       drawer: MyDrawer(),
 
