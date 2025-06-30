@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:teste/utils/my_drawer.dart';
 import 'utils/my_appBar.dart';
 import 'utils/my_footer.dart';
+import 'pages/loginPage.dart';
+import 'pages/cadastroPage.dart';
 import 'package:http/http.dart' as http;
 
 Future<List<dynamic>> fetchBookList(String apiUrl) async {
@@ -85,6 +87,9 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const Home(),
 
+        '/login': (context) => const Login(),
+
+        '/cadastro': (context) => const Register()
       },
     );
   }
