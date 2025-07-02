@@ -172,123 +172,151 @@ class RegisterPage extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MyAppBar(),
+      appBar: AppBar(
+        title: const Text("Register"),
+        centerTitle: true,
+        backgroundColor: Colors.black,
+        foregroundColor: Colors.white,
 
+        leading: IconButton(
+          iconSize: 30.0,
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Home()),
+            );
+          },
+          icon: Icon(Icons.arrow_back),
+        ),
+      ),
+      backgroundColor: Colors.lightBlue,
       body: Center(
-        child: Padding(padding: const EdgeInsets.all(16.0),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
           child: Container(
-              constraints: const BoxConstraints(maxWidth: 350, maxHeight: 600),
-              decoration: BoxDecoration(
-                  color: Colors.orangeAccent,
-                  borderRadius: BorderRadius.circular(10)
-              ),
+            constraints: const BoxConstraints(maxWidth: 350, maxHeight: 700),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black,
+                  spreadRadius: 2,
+                  blurRadius: 5,
+                  offset: Offset(0, 3), // deslocamento da sombra
+                ),
+              ],
+            ),
+
+            child: Padding(
+              padding: EdgeInsetsGeometry.fromLTRB(20.0, 20.0, 20.0, 20.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-
-                  TextField(
-                      style: const TextStyle(fontSize: 20),
-                      decoration: const InputDecoration(
-                        labelText: 'Your name',
-                      ),
-                      onChanged: (value) => setUsername(value)
+                  TextFormField(
+                    style: const TextStyle(fontSize: 20),
+                    decoration: const InputDecoration(
+                      labelText: 'Nome',
+                      border: OutlineInputBorder(),
+                    ),
+                    onChanged: (value) => setUsername(value),
                   ),
 
-                  TextField(
+                  const SizedBox(height: 16.0),
+
+                  TextFormField(
                     style: const TextStyle(fontSize: 20),
 
                     decoration: const InputDecoration(
-                        labelText: 'choice your password'
+                      labelText: 'Senha',
+                      border: OutlineInputBorder(),
                     ),
 
                     obscureText: true,
 
                     onChanged: (value) => setPassword(value),
                   ),
-
-                  TextField(
+                  const SizedBox(height: 16.0),
+                  TextFormField(
                     style: const TextStyle(fontSize: 20),
 
                     decoration: const InputDecoration(
-                        labelText: 'rewrite your password'
+                      labelText: 'Repita a senha',
+                      border: OutlineInputBorder(),
                     ),
-
-                    obscureText: true,
 
                     onChanged: (value) => setPassword2(value),
                   ),
-
-                  TextField(
+                  const SizedBox(height: 16.0),
+                  TextFormField(
                     style: const TextStyle(fontSize: 20),
 
-                    decoration: const InputDecoration(
-                        labelText: 'Email'
-                    ),
+                    decoration: const InputDecoration(labelText: 'Email',
+                      border: OutlineInputBorder(),),
 
                     onChanged: (value) => setEmail(value),
                   ),
-
-                  TextField(
+                  const SizedBox(height: 16.0),
+                  TextFormField(
                     style: const TextStyle(fontSize: 20),
 
-                    decoration: const InputDecoration(
-                        labelText: 'Cpf'
-                    ),
+                    decoration: const InputDecoration(labelText: 'Cpf',
+                      border: OutlineInputBorder(),),
 
                     onChanged: (value) => setCpf(value),
                   ),
-
-                  TextField(
+                  const SizedBox(height: 16.0),
+                  TextFormField(
                     style: const TextStyle(fontSize: 20),
 
-                    decoration: const InputDecoration(
-                        labelText: 'Telefone'
-                    ),
+                    decoration: const InputDecoration(labelText: 'Telefone',
+                      border: OutlineInputBorder(),),
 
                     onChanged: (value) => setTel(value),
                   ),
-
-                  TextField(
+                  const SizedBox(height: 16.0),
+                  TextFormField(
                     style: const TextStyle(fontSize: 20),
 
-                    decoration: const InputDecoration(
-                        labelText: 'Address'
-                    ),
+                    decoration: const InputDecoration(labelText: 'Address',
+                      border: OutlineInputBorder(),),
 
                     onChanged: (value) => setAddress(value),
                   ),
-
-                  TextField(
+                  const SizedBox(height: 16.0),
+                  TextFormField(
                     style: const TextStyle(fontSize: 20),
 
-                    decoration: const InputDecoration(
-                        labelText: 'Birth'
-                    ),
+                    decoration: const InputDecoration(labelText: 'Birth',
+                      border: OutlineInputBorder(),),
 
                     onChanged: (value) => setBirth(value),
                   ),
+                  const SizedBox(height: 36.0),
 
-                  const SizedBox(height: 25, width: 17,),
-                  ElevatedButton(onPressed: () => register(),
-                    child: Text("create account successfully"),
 
-                  ),
-
-                  Padding(
-                    padding: const EdgeInsets.only(top: 3),
-                    child: Text(
-                      message,
-                      style: const TextStyle(color: Colors.black, fontSize: 16),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.black
                     ),
+                    onPressed: () => register(),
+                    child: const Text("Cadastrar"),
                   ),
+                  if (message.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: Text(
+                        message,
+                        style: const TextStyle(color: Colors.red),
+                      ),
+                    ),
                 ],
-              )
+              ),
+            ),
           ),
         ),
       ),
-
-      bottomNavigationBar: MyFooter(),
-      drawer: MyDrawer(),
     );
   }
 
