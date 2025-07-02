@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:footer/footer.dart';
 import 'package:footer/footer_view.dart';
+import 'package:teste/register-book.dart';
 import 'login.dart';
 import 'register.dart';
 
@@ -90,6 +91,7 @@ class BooksVanilla extends StatelessWidget {
         '/': (context) => Home(),
         '/login': (context) => const Login(),
         '/register': (context) => const Register(),
+        '/register-book': (context) => const RegisterBook(),
 
       },
     );
@@ -151,6 +153,24 @@ class Home extends StatelessWidget {
 
         ],
       ),
+        drawer: Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              ListTile(
+                leading: const Icon(Icons.info),
+                title: const Text('Cadastrar Livro'),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.of(context).pushNamed('/register-book');
+                },
+              ),
+              const Divider(),
+
+            ],
+          ),
+        ),
+
       body: FooterView(
         footer: Footer(child: Text("Copy 2025")
           ),flex: 1,
@@ -158,7 +178,7 @@ class Home extends StatelessWidget {
            Column(
             children:<Widget>[
               // Featured Book Section
-              Padding(
+              /*Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Container(
                   width: double.infinity,
@@ -185,7 +205,8 @@ class Home extends StatelessWidget {
                     ],
                   ),
                 ),
-              ),
+              ),*/
+
               // Books Grid Section wrapped in a FutureBuilder.
               FutureBuilder<List<Map<String, String>>>(
                 future: _booksFuture(),
@@ -230,7 +251,7 @@ class Home extends StatelessWidget {
                 },
               ),
               // Burger Menu Widget: Assuming it is a valid widget.
-              BurguerMenu(),
+              /*BurguerMenu(),*/
             ],
           ),
         ],
@@ -239,14 +260,14 @@ class Home extends StatelessWidget {
   }
 }
 
-class BurguerMenu extends StatelessWidget {
+/*class BurguerMenu extends StatelessWidget {
   const BurguerMenu({super.key});
 
   @override
   Widget build(BuildContext context) {
     return DrawerButton();
   }
-}
+}*/
 
 
 class BookCard extends StatelessWidget {
