@@ -1,124 +1,43 @@
-import 'dart:convert';
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'main.dart';
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 
-import 'register.dart';
+final Dio _dio = Dio();
 
 class Login extends StatefulWidget {
   const Login({super.key});
 
   @override
-  State<Login> createState() => _MyAppState();
+  State<Login> createState() => _Login();
 }
 
-class _MyAppState extends State<Login> {
+class _Login extends State<Login> {
   String _username = '';
   String _password = '';
   bool _isLoggedIn = false;
   String _errorMessage = '';
 
-  void setUsername(String username) {
-    setState(() {
-      _username = username;
-    });
-  }
+  final RegExp _emailRegex = RegExp(
+    r'^[a-zA-Z0-9.!#$%&*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?)*$',
+  );
 
-  void setPassword(String password) {
-    setState(() {
-      _password = password;
-    });
-  }
-
-  Future<void> login() async {
-    await Future.delayed(const Duration(seconds: 1));
-    final url = Uri.parse('http://192.168.1.2:8080/api/account/login');
-
-    // Create the request body
-    final body = json.encode({'email': _username, 'password': _password});
-
-    final response = await http.post(
-      url,
-      headers: {
-        'Content-Type': 'application/json', // Set the content type to JSON
-        'Accept': 'application/json',
-      },
-      body: body,
-    );
-
-    setState(() {
-      if (response.statusCode == 200) {
-        _isLoggedIn = true;
-        _errorMessage = '';
-        print('Login successful: ${response.body}');
-      } else {
-        _isLoggedIn = false;
-        _errorMessage = 'Invalid username or password';
-      }
-    });
-  }
-
-  void logout() {
-    setState(() {
-      _isLoggedIn = false;
-      _username = '';
-      _password = '';
-      _errorMessage = '';
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Login App',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: _isLoggedIn
-          ? HomePage(username: _username, onLogout: logout)
-          : LoginPage(
-              setUsername: setUsername,
-              setPassword: setPassword,
-              login: login,
-              errorMessage: _errorMessage,
-            ),
-    );
-  }
-}
-
-class LoginPage extends StatelessWidget {
-  final Function(String) setUsername;
-  final Function(String) setPassword;
-  final Function() login;
-  final String errorMessage;
-
-  const LoginPage({
-    super.key,
-    required this.setUsername,
-    required this.setPassword,
-    required this.login,
-    required this.errorMessage,
-  });
+  final RegExp _passwordRegex = RegExp(
+    r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$',
+  );
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login'),
-        centerTitle: true,
-        backgroundColor: Colors.black,
-        foregroundColor: Colors.white,
-        leading: IconButton(
-          iconSize: 30.0,
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Home()),
-            );
-          },
-          icon: Icon(Icons.arrow_back),
+        title: const Text(
+          'Página Modelo Stateful',
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
+        backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
+        centerTitle: true,
       ),
-      backgroundColor: Colors.lightBlue,
+
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -154,10 +73,20 @@ class LoginPage extends StatelessWidget {
                     decoration: const InputDecoration(
                       fillColor: Colors.white12,
                       filled: true,
-                      labelText: 'Username',
+                      labelText: 'E-mail:',
                       border: OutlineInputBorder(),
                     ),
-                    onChanged: (value) => setUsername(value),
+                    keyboardType: TextInputType.emailAddress,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor, insira seu email.';
+                      }
+                      // Validação de e-mail com Regex
+                      if (!_emailRegex.hasMatch(value)) {
+                        return 'Por favor, insira um email válido.';
+                      }
+                      return null;
+                    },
                   ),
 
                   const SizedBox(height: 26.0),
@@ -167,11 +96,20 @@ class LoginPage extends StatelessWidget {
                     decoration: const InputDecoration(
                       fillColor: Colors.white12,
                       filled: true,
-                      labelText: 'Password',
+                      labelText: 'Password:',
                       border: OutlineInputBorder(),
                     ),
                     obscureText: true,
-                    onChanged: (value) => setPassword(value),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor, insira seu email.';
+                      }
+                      // Validação de e-mail com Regex
+                      if (!_passwordRegex.hasMatch(value)) {
+                        return 'Por favor, digite uma senha válida.';
+                      }
+                      return null;
+                    },
                   ),
 
                   const SizedBox(height: 50.0),
@@ -181,17 +119,9 @@ class LoginPage extends StatelessWidget {
                       foregroundColor: Colors.white,
                       backgroundColor: Colors.black, // Cor do texto/ícone
                     ),
-                    onPressed: () => login(),
+                    onPressed: () => {_processLogin()},
                     child: const Text('Login'),
                   ),
-                  if (errorMessage.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Text(
-                        errorMessage,
-                        style: const TextStyle(color: Colors.red),
-                      ),
-                    ),
 
                   const SizedBox(height: 50.0),
 
@@ -200,7 +130,7 @@ class LoginPage extends StatelessWidget {
                       'Esqueci a senha',
                       style: TextStyle(color: Colors.lightBlueAccent),
                     ),
-                    onTap: () => {Navigator.pushNamed(context, '')},
+                    onTap: () => {Navigator.pushNamed(context, '/')},
                   ),
 
                   const SizedBox(height: 20.0),
@@ -208,10 +138,7 @@ class LoginPage extends StatelessWidget {
                   Text('Não tem uma conta?'),
                   TextButton(
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Register()),
-                      );
+                      Navigator.pushNamed(context, '/register');
                     },
                     child: Text(
                       'Sing Up',
@@ -232,7 +159,7 @@ class LoginPage extends StatelessWidget {
                     color: Colors.black,
                       iconSize: 30.0,
                       onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => Home()),);
+                        Navigator.pushNamed(context, '/'');
                       }, icon: Icon(Icons.arrow_back))*/
                 ],
               ),
@@ -240,36 +167,64 @@ class LoginPage extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
 
-class HomePage extends StatelessWidget {
-  final String username;
-  final Function() onLogout;
-
-  const HomePage({super.key, required this.username, required this.onLogout});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home'),
-        automaticallyImplyLeading: false,
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Bem Vindo, $username!'),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () => onLogout(),
-              child: const Text('Logout'),
+      bottomNavigationBar: const BottomAppBar(
+        color: Colors.blue,
+        child: SizedBox(
+          height: 50.0,
+          child: Center(
+            child: Text(
+              'Rodapé da Página Stateful',
+              style: TextStyle(color: Colors.white),
             ),
-          ],
+          ),
         ),
       ),
     );
+  }
+
+  Future<void> _processLogin() async {
+    await Future.delayed(const Duration(seconds: 1));
+
+    // Create the request body
+    /*      final body = json.encode({'email': _username, 'password': _password});
+
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json', // Set the content type to JSON
+          'Accept': 'application/json',
+        },
+        body: body,
+      );*/
+
+    // Envia a requisição POST com Dio de forma assíncrona
+    final Response response = await _dio.post(
+      'http://10.144.31.70:8080/api/account/login',
+      data: {'email': _username, 'password': _password},
+      // O Dio converte automaticamente o Map para JSON
+      options: Options(
+        // Define o Content-Type como JSON
+        contentType: Headers.jsonContentType,
+      ),
+    );
+    if (response.statusCode == 200) {
+      setState(() {
+        _isLoggedIn = true;
+        _errorMessage = '';
+        if (kDebugMode) {
+          print('Login successful');
+        }
+      });
+
+    } else {
+      setState(() {
+        _isLoggedIn = false;
+        _errorMessage = 'Invalid username or password';
+        if (kDebugMode) {
+          print('Não logou');
+        }
+      });
+    }
   }
 }
