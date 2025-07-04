@@ -23,13 +23,6 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget{
       backgroundColor: Colors.white,
       centerTitle: true,
 
-      // actions: <Widget>[
-      //   TextButton(onPressed: () {
-      //     Navigator.push(context,
-      //         MaterialPageRoute(builder: (context) => MyPerfil())
-      //     );
-      //   }, child: Text("Perfil"))
-      // ],
 
     );
   }
