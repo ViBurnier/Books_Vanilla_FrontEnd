@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:footer/footer.dart';
 import 'package:footer/footer_view.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dio_register-book.dart';
 import 'login.dart';
 import 'register.dart';
@@ -104,6 +105,8 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   late Future<List<Map<String, String>>> _booksFuture;
+  late String _name = "";
+
   final List<String> _bookProperties = [
     'title',
     'price',
@@ -112,11 +115,30 @@ class _HomeState extends State<Home> {
     'author'
   ];
 
+  //permite pegar dados do usuário logado.
+  //para ver quais estao disponíveis para pegar:
+  //vá até login.dart, na função Future<void> login() async {
+  //os prefs são os que estão disponíveis para pegar.
+  void loadUserInfo() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String? token = prefs.getString('userToken');
+    String? name = prefs.getString('userName');
+
+
+    if(name != null){
+      _name = name;
+    }
+
+    print('nome user: $name');
+    print('Token: $token');
+  }
+  
   @override
   void initState() {
     super.initState();
-    _booksFuture =
-        BookService.fetchAndReturnBookList(AppConstants.apiUrl, _bookProperties);
+    _booksFuture = BookService.fetchAndReturnBookList(AppConstants.apiUrl, _bookProperties);
+    loadUserInfo();
   }
 
   @override
@@ -142,7 +164,7 @@ class _HomeState extends State<Home> {
               );
             },
             icon: const Icon(Icons.account_circle),
-          ),Text(responseBody)
+          ),Text(_name),
         ],
       ),
 

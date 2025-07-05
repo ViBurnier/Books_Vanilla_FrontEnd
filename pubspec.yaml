@@ -31,6 +31,9 @@ dependencies:
   flutter:
     sdk: flutter
   dio: ^5.8.0+1
+  dio_cookie_manager: ^3.2.0
+  cookie_jar: ^4.0.8
+  shared_preferences: ^2.0.0
   footer:
 
   # The following adds the Cupertino Icons font to your application.
