@@ -9,10 +9,12 @@ final _dio = Dio();
 
 Future<void> postNewBook(Map<String, dynamic> bookData) async{
   try{
+
     final response = await _dio.post(
-        'http://10.144.31.70:8080/api/book/create', // Endpoint POST da API
+        'http://192.168.1.3:8080/api/book/register', // Endpoint POST da API
         data: bookData,
     );
+    print(response.data);
 
     if(response.data != 201){
       print('Erro ao salvar livro: Status ${response.statusCode}');
@@ -53,7 +55,6 @@ class _RegisterBookState extends State<RegisterBook> {
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _subtitleController = TextEditingController();
   final TextEditingController _synopsisController = TextEditingController();
   final TextEditingController _isbnController = TextEditingController();
   final TextEditingController _authorController = TextEditingController();
@@ -139,7 +140,8 @@ class _RegisterBookState extends State<RegisterBook> {
               const SizedBox(height: 12),
               const Text('Selecione as categorias', style: TextStyle(color: Colors.white)),
               Wrap(
-                spacing: 8.0,
+                spacing: 8.0 ,
+
                 children: _allCategories.map((category) {
                   final isSelected = _selectedCategories.contains(category);
                   return FilterChip(
@@ -165,7 +167,19 @@ class _RegisterBookState extends State<RegisterBook> {
               const SizedBox(height: 30),
               Center(
                 child: ElevatedButton(
-                  onPressed: postNewBook(),
+                  onPressed: () {
+                    final Map<String, dynamic> bookMap = {
+                      "title": _titleController.text,
+                      "synopsis": _synopsisController.text,
+                      "categories": _selectedCategories,
+                      "releaseDate": _parseDate(_releaseDateController.text),
+                      "isbn": _isbnController.text,
+                      "author": _authorController.text,
+                      "price": double.tryParse(_priceController.text.replaceAll('R\$', '').replaceAll(',', '.')) ?? 0.0,
+                    };
+
+                    postNewBook(bookMap);
+                  },
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.black),
                   child: const Text('Cadastrar Livro', style: TextStyle(color: Colors.white)),
                 ),

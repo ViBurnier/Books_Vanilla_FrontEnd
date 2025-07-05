@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'main.dart';
 import 'package:http/http.dart' as http;
-
+import 'dio_register-book.dart';
 import 'register.dart';
 
 class Login extends StatefulWidget {
@@ -14,14 +14,15 @@ class Login extends StatefulWidget {
 }
 
 class _MyAppState extends State<Login> {
-  String _username = '';
+  String _userEmail = '';
   String _password = '';
   bool _isLoggedIn = false;
   String _errorMessage = '';
+  dynamic _responseBody;
 
-  void setUsername(String username) {
+  void setUserEmail(String userEmail) {
     setState(() {
-      _username = username;
+      _userEmail = userEmail;
     });
   }
 
@@ -33,10 +34,11 @@ class _MyAppState extends State<Login> {
 
   Future<void> login() async {
     await Future.delayed(const Duration(seconds: 1));
-    final url = Uri.parse('http://192.168.1.2:8080/api/account/login');
+    final url = Uri.parse('http://192.168.1.3:8080/api/account/login');
 
     // Create the request body
-    final body = json.encode({'email': _username, 'password': _password});
+    final body = json.encode({'email': _userEmail, 'password': _password});
+
 
     final response = await http.post(
       url,
@@ -51,10 +53,17 @@ class _MyAppState extends State<Login> {
       if (response.statusCode == 200) {
         _isLoggedIn = true;
         _errorMessage = '';
-        print('Login successful: ${response.body}');
+         print('Login successful: ${response.body}');
+         final responseBody = json.decode(response.body);
+
+         //========retorna um valor especifico do body=========
+        // String userName = responseBody['data']['name'];
+        // print('Name: $userName');
+
       } else {
         _isLoggedIn = false;
         _errorMessage = 'Invalid username or password';
+
       }
     });
   }
@@ -62,7 +71,7 @@ class _MyAppState extends State<Login> {
   void logout() {
     setState(() {
       _isLoggedIn = false;
-      _username = '';
+      _userEmail = '';
       _password = '';
       _errorMessage = '';
     });
@@ -74,9 +83,9 @@ class _MyAppState extends State<Login> {
       title: 'Login App',
       theme: ThemeData(primarySwatch: Colors.blue),
       home: _isLoggedIn
-          ? HomePage(username: _username, onLogout: logout)
+          ? HomePage(userEmail: _userEmail)
           : LoginPage(
-              setUsername: setUsername,
+              setUserEmail: setUserEmail,
               setPassword: setPassword,
               login: login,
               errorMessage: _errorMessage,
@@ -86,14 +95,14 @@ class _MyAppState extends State<Login> {
 }
 
 class LoginPage extends StatelessWidget {
-  final Function(String) setUsername;
+  final Function(String) setUserEmail;
   final Function(String) setPassword;
   final Function() login;
   final String errorMessage;
 
   const LoginPage({
     super.key,
-    required this.setUsername,
+    required this.setUserEmail,
     required this.setPassword,
     required this.login,
     required this.errorMessage,
@@ -154,10 +163,10 @@ class LoginPage extends StatelessWidget {
                     decoration: const InputDecoration(
                       fillColor: Colors.white12,
                       filled: true,
-                      labelText: 'Username',
+                      labelText: 'EMAIL',
                       border: OutlineInputBorder(),
                     ),
-                    onChanged: (value) => setUsername(value),
+                    onChanged: (value) => setUserEmail(value),
                   ),
 
                   const SizedBox(height: 26.0),
@@ -245,10 +254,11 @@ class LoginPage extends StatelessWidget {
 }
 
 class HomePage extends StatelessWidget {
-  final String username;
-  final Function() onLogout;
+  final String userEmail;
 
-  const HomePage({super.key, required this.username, required this.onLogout});
+  const HomePage({super.key, required this.userEmail});
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -261,11 +271,14 @@ class HomePage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Bem Vindo, $username!'),
+            Text('Bem Vindo, $userEmail!'),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () => onLogout(),
-              child: const Text('Logout'),
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const RegisterBook()),
+              ),
+              child: const Text('register book'),
             ),
           ],
         ),

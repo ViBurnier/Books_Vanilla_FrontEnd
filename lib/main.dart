@@ -3,13 +3,13 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:footer/footer.dart';
 import 'package:footer/footer_view.dart';
-import 'package:teste/register-book.dart';
+import 'dio_register-book.dart';
 import 'login.dart';
 import 'register.dart';
 
 /// Constantes para requisições de rede e ativos de imagem.
 class AppConstants {
-  static const String apiUrl = "http://10.144.31.70:8080/api/book/list";
+  static const String apiUrl = "http://192.168.1.3:8080/api/book/list";
   static const String appLogoUrl = "https://i.imgur.com/h7f6grg.png";
   static const String defaultBookCoverUrl =
       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQPhjUyQ760_j4k4sEKfv_7ALMg84oQUpR3eg&';
@@ -138,11 +138,11 @@ class _HomeState extends State<Home> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const RegisterBook()),
+                MaterialPageRoute(builder: (context) => const Login()),
               );
             },
             icon: const Icon(Icons.account_circle),
-          ),
+          ),Text(responseBody)
         ],
       ),
 

@@ -84,7 +84,7 @@ class _MyAppState extends State<Register> {
 
   Future<void> register() async {
     await Future.delayed(const Duration(seconds: 1));
-    final url = Uri.parse('http://192.168.1.2:8080/api/account/create');
+    final url = Uri.parse('http://192.168.1.3:8080/api/account/create');
 
     final body = json.encode({
       'name': _username,
