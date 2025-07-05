@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:footer/footer.dart';
 import 'package:footer/footer_view.dart';
+import 'package:teste/page_books.dart';
 import 'package:teste/register-book.dart';
 import 'login.dart';
 // import 'login_antigo.dart';
@@ -91,6 +92,7 @@ class BooksVanilla extends StatelessWidget {
         '/login': (context) => const Login(),
         '/register': (context) => const Register(),
         '/register-book': (context) => const RegisterBook(),
+        '/book': (context) => const PageBook(),
       },
     );
   }
@@ -198,19 +200,23 @@ class _HomeState extends State<Home> {
               physics: const NeverScrollableScrollPhysics(),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
+                crossAxisSpacing: 1,
+                mainAxisSpacing: 5,
                 childAspectRatio: 0.7,
               ),
               itemBuilder: (context, index) {
                 var book = books[index];
-                return BookCard(
-                  title: book['title'] ?? 'Sem Título',
-                  author: book['author'] ?? 'Sem Autor',
-                  imageUrl:
-                  book['coverImageUrl'] ?? AppConstants.defaultBookCoverUrl,
-                  synopsis: book['price'] ?? 'Sem Preço', // Preço usado como sinopse
-                );
+                return InkWell(onTap: () {
+                  Navigator.pushNamed(context, '/book', arguments: {'title': book['title'], 'author': book['author'], 'imageUrl': book['coverImageUrl'], 'synopsis': book['price']});
+                },
+                  child: BookCard(
+                    // Adjust property keys to your API response keys.
+                    title: book['title'] ?? 'No Title',
+                    author: book['author'] ?? 'No Author',
+                    imageUrl: book['coverImageUrl'] ?? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQPhjUyQ760_j4k4sEKfv_7ALMg84oQUpR3eg&',
+                    synopsis: book['synopsis'] ?? 'Sem sinopse ',
+                    price: book['price'] ?? 'Sem preço',
+                  ),);
               },
             ),
           );
@@ -225,6 +231,7 @@ class BookCard extends StatelessWidget {
   final String author;
   final String imageUrl;
   final String synopsis;
+  final String price;
 
   const BookCard({
     super.key,
@@ -232,9 +239,10 @@ class BookCard extends StatelessWidget {
     required this.author,
     required this.imageUrl,
     required this.synopsis,
+    required this.price,
   });
 
-  /*----------------------------------------------------------Costomizasão dos livros----------------------------------------*/
+  /*----------------------------------------------------------Customizasão dos livros----------------------------------------*/
 
   @override
   Widget build(BuildContext context) {

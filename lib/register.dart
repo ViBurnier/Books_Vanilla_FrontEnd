@@ -118,21 +118,19 @@ class _Register extends State<Register> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Register App',
-      theme: ThemeData(primarySwatch: Colors.lightBlue),
-      home: RegisterPage(
-        setUsername: setUsername,
-        setPassword: setPassword,
-        setPassword2: setPassword2,
-        setEmail: setEmail,
-        setCpf: setCpf,
-        setTel: setTel,
-        setAddress: setAddress,
-        setBirth: setBirth,
-        register: sendRegister,
-        errorMessage: _errorMessage,
-      ),
+    // DO NOT return a new MaterialApp here.
+    // Instead, directly return the widget that represents your Register screen.
+    return RegisterPage(
+      setUsername: setUsername,
+      setPassword: setPassword,
+      setPassword2: setPassword2,
+      setEmail: setEmail,
+      setCpf: setCpf,
+      setTel: setTel,
+      setAddress: setAddress,
+      setBirth: setBirth,
+      register: sendRegister,
+      errorMessage: _errorMessage,
     );
   }
 }
@@ -183,7 +181,7 @@ class RegisterPage extends StatelessWidget {
           icon: Icon(Icons.arrow_back),
         ),
       ),
-backgroundColor: Colors.lightBlue,
+      backgroundColor: Colors.lightBlue,
 
 
       drawer: Drawer(
@@ -312,8 +310,8 @@ backgroundColor: Colors.lightBlue,
 
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor: Colors.black
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.black
                     ),
                     onPressed: () => register(),
                     child: const Text("Cadastrar"),
@@ -332,6 +330,7 @@ backgroundColor: Colors.lightBlue,
           ),
         ),
       ),
-    ),);
+      ),);
   }
 }
+
