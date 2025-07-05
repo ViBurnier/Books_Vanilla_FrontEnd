@@ -9,7 +9,7 @@ import 'register.dart';
 
 /// Constantes para requisições de rede e ativos de imagem.
 class AppConstants {
-  static const String apiUrl = "http://192.168.1.2:8080/api/book/list";
+  static const String apiUrl = "http://10.144.31.70:8080/api/book/list";
   static const String appLogoUrl = "https://i.imgur.com/h7f6grg.png";
   static const String defaultBookCoverUrl =
       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQPhjUyQ760_j4k4sEKfv_7ALMg84oQUpR3eg&';
@@ -138,7 +138,7 @@ class _HomeState extends State<Home> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const Login()),
+                MaterialPageRoute(builder: (context) => const RegisterBook()),
               );
             },
             icon: const Icon(Icons.account_circle),
