@@ -4,13 +4,12 @@ import 'package:flutter/material.dart';
 import 'main.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'login.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
 
   @override
-  State<Register> createState() => _MyAppState();
+  State<Register> createState() => _Register();
 }
 
 String parseDate(String birth) {
@@ -22,7 +21,7 @@ String parseDate(String birth) {
   return dateFinal;
 }
 
-class _MyAppState extends State<Register> {
+class _Register extends State<Register> {
   String _username = '';
   String _email = '';
   String _password = '';
@@ -37,6 +36,7 @@ class _MyAppState extends State<Register> {
   void setUsername(String username) {
     setState(() {
       _username = username;
+      print('nonono');
     });
   }
 
@@ -82,7 +82,7 @@ class _MyAppState extends State<Register> {
     });
   }
 
-  Future<void> register() async {
+  Future<void> sendRegister() async {
     await Future.delayed(const Duration(seconds: 1));
     final url = Uri.parse('http://192.168.1.2:8080/api/account/create');
 
@@ -118,21 +118,19 @@ class _MyAppState extends State<Register> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Register App',
-      theme: ThemeData(primarySwatch: Colors.lightBlue),
-      home: RegisterPage(
-        setUsername: setUsername,
-        setPassword: setPassword,
-        setPassword2: setPassword2,
-        setEmail: setEmail,
-        setCpf: setCpf,
-        setTel: setTel,
-        setAddress: setAddress,
-        setBirth: setBirth,
-        register: register,
-        errorMessage: _errorMessage,
-      ),
+    // DO NOT return a new MaterialApp here.
+    // Instead, directly return the widget that represents your Register screen.
+    return RegisterPage(
+      setUsername: setUsername,
+      setPassword: setPassword,
+      setPassword2: setPassword2,
+      setEmail: setEmail,
+      setCpf: setCpf,
+      setTel: setTel,
+      setAddress: setAddress,
+      setBirth: setBirth,
+      register: sendRegister,
+      errorMessage: _errorMessage,
     );
   }
 }
@@ -167,7 +165,7 @@ class RegisterPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Register"),
+        title: const Text("Registrar"),
         centerTitle: true,
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
@@ -175,15 +173,36 @@ class RegisterPage extends StatelessWidget {
         leading: IconButton(
           iconSize: 30.0,
           onPressed: () {
-            Navigator.push(
+            Navigator.pushNamed(
               context,
-              MaterialPageRoute(builder: (context) => Home()),
+              '/',
             );
           },
           icon: Icon(Icons.arrow_back),
         ),
       ),
-backgroundColor: Colors.lightBlue,
+      backgroundColor: Colors.lightBlue,
+
+
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            ListTile(
+              leading: const Icon(Icons.add),
+              title: const Text('Cadastrar livro'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.of(context).pushNamed('/register-book'); // Usar pushNamed para ir para /test
+              },
+            ),
+
+          ],
+        ),
+      ),
+
+
+
       body: SingleChildScrollView( child: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -291,8 +310,8 @@ backgroundColor: Colors.lightBlue,
 
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor: Colors.black
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.black
                     ),
                     onPressed: () => register(),
                     child: const Text("Cadastrar"),
@@ -311,6 +330,7 @@ backgroundColor: Colors.lightBlue,
           ),
         ),
       ),
-    ),);
+      ),);
   }
 }
+
