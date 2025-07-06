@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'main.dart';
 import 'package:http/http.dart' as http;
 import 'dio_register-book.dart';
@@ -36,36 +37,45 @@ class _MyAppState extends State<Login> {
     await Future.delayed(const Duration(seconds: 1));
     final url = Uri.parse('http://192.168.1.3:8080/api/account/login');
 
-    // Create the request body
     final body = json.encode({'email': _userEmail, 'password': _password});
-
 
     final response = await http.post(
       url,
       headers: {
-        'Content-Type': 'application/json', // Set the content type to JSON
+        'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
       body: body,
     );
 
-    setState(() {
-      if (response.statusCode == 200) {
+    if (response.statusCode == 200) {
+      final responseBody = json.decode(response.body);
+
+      String token = responseBody['data']['token'];
+      String name = responseBody['data']['name'];
+      String photo = responseBody['data']['photo'];
+
+      // SharedPreferences: operações assíncronas fora do setState
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('isLoggedIn', true);
+      await prefs.setString('userToken', token);
+      await prefs.setString('userName', name);
+      await prefs.setString('userPhoto', photo);
+
+      // Atualização síncrona dentro do setState
+      setState(() {
         _isLoggedIn = true;
         _errorMessage = '';
-         print('Login successful: ${response.body}');
-         final responseBody = json.decode(response.body);
+      });
 
-         //========retorna um valor especifico do body=========
-        // String userName = responseBody['data']['name'];
-        // print('Name: $userName');
-
-      } else {
+      print('Login successful: ${response.body}');
+    } else {
+      // Atualização síncrona dentro do setState
+      setState(() {
         _isLoggedIn = false;
         _errorMessage = 'Invalid username or password';
-
-      }
-    });
+      });
+    }
   }
 
   void logout() {

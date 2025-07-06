@@ -70,12 +70,18 @@ class BookService {
   }
 }
 
-void main() {
-  runApp(const BooksVanilla());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+
+  runApp( BooksVanilla(isLoggedIn: isLoggedIn));
 }
 
 class BooksVanilla extends StatelessWidget {
-  const BooksVanilla({super.key});
+  final bool isLoggedIn;
+
+  const BooksVanilla({super.key, required this.isLoggedIn});
 
   @override
   Widget build(BuildContext context) {
@@ -114,7 +120,7 @@ class _HomeState extends State<Home> {
     'coverImageUrl',
     'author'
   ];
-
+  /*------------------------------------------------------------------------------------------------------------*/
   //permite pegar dados do usuário logado.
   //para ver quais estao disponíveis para pegar:
   //vá até login.dart, na função Future<void> login() async {
@@ -124,16 +130,16 @@ class _HomeState extends State<Home> {
 
     String? token = prefs.getString('userToken');
     String? name = prefs.getString('userName');
-
+    bool? isLoggedIn = prefs.getBool('isLoggedIn');
 
     if(name != null){
       _name = name;
     }
 
-    print('nome user: $name');
-    print('Token: $token');
+    print(is)
+
   }
-  
+  /*------------------------------------------------------------------------------------------------------------*/
   @override
   void initState() {
     super.initState();
@@ -160,7 +166,7 @@ class _HomeState extends State<Home> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const Login()),
+                MaterialPageRoute(builder: (context) => ),
               );
             },
             icon: const Icon(Icons.account_circle),
