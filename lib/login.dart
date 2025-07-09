@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+
 
 final Dio _dio = Dio();
 
@@ -16,6 +19,9 @@ class _Login extends State<Login> {
   String _password = '';
   bool _isLoggedIn = false;
   String _errorMessage = '';
+
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   final RegExp _emailRegex = RegExp(
     r'^[a-zA-Z0-9.!#$%&*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?)*$',
@@ -69,6 +75,7 @@ class _Login extends State<Login> {
                   const SizedBox(height: 26.0),
 
                   TextFormField(
+                    controller: _usernameController,
                     style: const TextStyle(fontSize: 20),
                     decoration: const InputDecoration(
                       fillColor: Colors.white12,
@@ -92,6 +99,7 @@ class _Login extends State<Login> {
                   const SizedBox(height: 26.0),
 
                   TextFormField(
+                    controller: _passwordController,
                     style: const TextStyle(fontSize: 20),
                     decoration: const InputDecoration(
                       fillColor: Colors.white12,
@@ -102,7 +110,7 @@ class _Login extends State<Login> {
                     obscureText: true,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Por favor, insira seu email.';
+                        return 'Por favor, insira sua senha.';
                       }
                       // Validação de e-mail com Regex
                       if (!_passwordRegex.hasMatch(value)) {
@@ -198,6 +206,16 @@ class _Login extends State<Login> {
         body: body,
       );*/
 
+    setState(() {
+      _username = _usernameController.text; // Get the username from the controller
+      _password = _passwordController.text; // Get the password from the controller
+    });
+
+    final url = Uri.parse('http://10.144.31.70:8080/api/account/login');
+    final body = json.encode({
+      "email": _username,
+      'password': _password,
+    });
     // Envia a requisição POST com Dio de forma assíncrona
     final Response response = await _dio.post(
       'http://10.144.31.70:8080/api/account/login',
@@ -227,4 +245,11 @@ class _Login extends State<Login> {
       });
     }
   }
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 }
+

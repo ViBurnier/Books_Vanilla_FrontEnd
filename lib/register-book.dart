@@ -28,7 +28,7 @@ class _RegisterBookState extends State<RegisterBook> {
   Future<void> _submitForm() async {
     if (!_formKey.currentState!.validate()) return;
 
-    final uri = Uri.parse('http://192.168.1.2:8080/api/book/create');
+    final uri = Uri.parse('http://10.144.31.70:8080/api/book/create');
     final body = json.encode({
       "title": _titleController.text,
       "subtitle": _subtitleController.text,
