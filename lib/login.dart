@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 
 final Dio _dio = Dio();
 
@@ -22,6 +22,25 @@ class _Login extends State<Login> {
 
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSavedCookie();
+  }
+
+  Future<void> _loadSavedCookie() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool? loggedIn = prefs.getBool('loged');
+    setState(() {
+      _isLoggedIn = loggedIn ?? false; // Default to false if null
+    });
+    print(prefs.getBool('loged'));
+    if (_isLoggedIn) {
+      print('move');
+      Navigator.pushNamed(context, '/profile');
+    }
+  }
 
   final RegExp _emailRegex = RegExp(
     r'^[a-zA-Z0-9.!#$%&*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?)*$',
@@ -61,6 +80,7 @@ class _Login extends State<Login> {
                 ),
               ],
             ),
+
             child: Padding(
               padding: EdgeInsetsGeometry.fromLTRB(20.0, 20.0, 20.0, 20.0),
               child: Column(
@@ -193,7 +213,6 @@ class _Login extends State<Login> {
 
   Future<void> _processLogin() async {
     await Future.delayed(const Duration(seconds: 1));
-
     // Create the request body
     /*      final body = json.encode({'email': _username, 'password': _password});
 
@@ -207,15 +226,14 @@ class _Login extends State<Login> {
       );*/
 
     setState(() {
-      _username = _usernameController.text; // Get the username from the controller
-      _password = _passwordController.text; // Get the password from the controller
+      _username =
+          _usernameController.text; // Get the username from the controller
+      _password =
+          _passwordController.text; // Get the password from the controller
     });
 
     final url = Uri.parse('http://10.144.31.70:8080/api/account/login');
-    final body = json.encode({
-      "email": _username,
-      'password': _password,
-    });
+    final body = json.encode({"email": _username, 'password': _password});
     // Envia a requisição POST com Dio de forma assíncrona
     final Response response = await _dio.post(
       'http://10.144.31.70:8080/api/account/login',
@@ -226,7 +244,19 @@ class _Login extends State<Login> {
         contentType: Headers.jsonContentType,
       ),
     );
+
+    // Get the cookies from the response headers
+    String? cookie = _username;
+
     if (response.statusCode == 200) {
+      // Print all response headers for debugging
+      //print('Response headers: ${response.headers}');
+
+      // Save the cookie using SharedPreferences
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('username', cookie);
+      await prefs.setBool('loged', true);
+
       setState(() {
         _isLoggedIn = true;
         _errorMessage = '';
@@ -234,7 +264,6 @@ class _Login extends State<Login> {
           print('Login successful');
         }
       });
-
     } else {
       setState(() {
         _isLoggedIn = false;
@@ -244,7 +273,13 @@ class _Login extends State<Login> {
         }
       });
     }
+
+    if (_isLoggedIn) {
+      // ignore: use_build_context_synchronously
+      Navigator.pushNamed(context, '/profile');
+    }
   }
+
   @override
   void dispose() {
     _usernameController.dispose();
@@ -252,4 +287,3 @@ class _Login extends State<Login> {
     super.dispose();
   }
 }
-

@@ -6,6 +6,7 @@ import 'package:footer/footer_view.dart';
 import 'package:teste/page_books.dart';
 import 'package:teste/register-book.dart';
 import 'login.dart';
+import 'profile.dart';
 // import 'login_antigo.dart';
 import 'register.dart';
 
@@ -33,11 +34,13 @@ class BookService {
           return jsonResponse['data'];
         } else {
           throw const FormatException(
-              'Estrutura JSON inesperada: lista "data" não encontrada.');
+            'Estrutura JSON inesperada: lista "data" não encontrada.',
+          );
         }
       } else {
         throw Exception(
-            'Falha ao carregar dados, código de status: ${response.statusCode}');
+          'Falha ao carregar dados, código de status: ${response.statusCode}',
+        );
       }
     } catch (error) {
       throw Exception('Erro ao buscar dados: $error');
@@ -47,7 +50,9 @@ class BookService {
   /// Busca a lista JSON de livros da [apiUrl] e retorna as propriedades
   /// especificadas de cada livro como uma Lista de Map<String, String>.
   static Future<List<Map<String, String>>> fetchAndReturnBookList(
-      String apiUrl, List<String> properties) async {
+    String apiUrl,
+    List<String> properties,
+  ) async {
     List<Map<String, String>> bookList = [];
 
     try {
@@ -63,7 +68,9 @@ class BookService {
         }
       }
     } catch (error) {
-      debugPrint('Erro: $error'); // Use debugPrint para erros de desenvolvimento
+      debugPrint(
+        'Erro: $error',
+      ); // Use debugPrint para erros de desenvolvimento
       rethrow; // Lança o erro novamente para ser capturado pelo FutureBuilder
     }
 
@@ -93,6 +100,7 @@ class BooksVanilla extends StatelessWidget {
         '/register': (context) => const Register(),
         '/register-book': (context) => const RegisterBook(),
         '/book': (context) => const PageBook(),
+        '/profile': (context) => const ProfilePage(),
       },
     );
   }
@@ -112,14 +120,16 @@ class _HomeState extends State<Home> {
     'price',
     'genre',
     'coverImageUrl',
-    'author'
+    'author',
   ];
 
   @override
   void initState() {
     super.initState();
-    _booksFuture =
-        BookService.fetchAndReturnBookList(AppConstants.apiUrl, _bookProperties);
+    _booksFuture = BookService.fetchAndReturnBookList(
+      AppConstants.apiUrl,
+      _bookProperties,
+    );
   }
 
   @override
@@ -138,17 +148,14 @@ class _HomeState extends State<Home> {
           IconButton(
             iconSize: 50.0,
             onPressed: () {
-              Navigator.pushNamed(
-                context,
-                '/login',
-              );
+              Navigator.pushNamed(context, '/login');
             },
             icon: const Icon(Icons.account_circle),
           ),
         ],
       ),
 
-/*------------------------------------------------------quebrado------------------------------------------------------*/
+      /*------------------------------------------------------quebrado------------------------------------------------------*/
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -158,25 +165,20 @@ class _HomeState extends State<Home> {
               title: const Text('Cadastrar livro'),
               onTap: () {
                 Navigator.pop(context);
-                Navigator.of(context).pushNamed('/register-book'); // Usar pushNamed para ir para /test
+                Navigator.of(context).pushNamed(
+                  '/register-book',
+                ); // Usar pushNamed para ir para /test
               },
             ),
-
           ],
         ),
       ),
-/*------------------------------------------------------------------------------------------------------------*/
+      /*------------------------------------------------------------------------------------------------------------*/
       body: FooterView(
-        footer: Footer(
-          child: Text(""),
-        ),
+        footer: Footer(child: Text("")),
         flex: 1,
-        children: [
-          _buildBooksGrid(),
-        ],
+        children: [_buildBooksGrid()],
       ),
-
-
     );
   }
 
@@ -206,17 +208,30 @@ class _HomeState extends State<Home> {
               ),
               itemBuilder: (context, index) {
                 var book = books[index];
-                return InkWell(onTap: () {
-                  Navigator.pushNamed(context, '/book', arguments: {'title': book['title'], 'author': book['author'], 'imageUrl': book['coverImageUrl'], 'synopsis': book['price']});
-                },
+                return InkWell(
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      '/book',
+                      arguments: {
+                        'title': book['title'],
+                        'author': book['author'],
+                        'imageUrl': book['coverImageUrl'],
+                        'synopsis': book['price'],
+                      },
+                    );
+                  },
                   child: BookCard(
                     // Adjust property keys to your API response keys.
                     title: book['title'] ?? 'No Title',
                     author: book['author'] ?? 'No Author',
-                    imageUrl: book['coverImageUrl'] ?? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQPhjUyQ760_j4k4sEKfv_7ALMg84oQUpR3eg&',
+                    imageUrl:
+                        book['coverImageUrl'] ??
+                        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQPhjUyQ760_j4k4sEKfv_7ALMg84oQUpR3eg&',
                     synopsis: book['synopsis'] ?? 'Sem sinopse ',
                     price: book['price'] ?? 'Sem preço',
-                  ),);
+                  ),
+                );
               },
             ),
           );
@@ -253,7 +268,9 @@ class BookCard extends StatelessWidget {
         children: [
           Expanded(
             child: ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(10),
+              ),
               child: Image.network(
                 imageUrl,
                 width: double.infinity,
@@ -280,17 +297,11 @@ class BookCard extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Text(
-              author,
-              style: TextStyle(color: Colors.grey[700]),
-            ),
+            child: Text(author, style: TextStyle(color: Colors.grey[700])),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Text(
-              synopsis,
-              style: TextStyle(color: Colors.grey[700]),
-            ),
+            child: Text(synopsis, style: TextStyle(color: Colors.grey[700])),
           ),
           const SizedBox(height: 8),
         ],
